@@ -1,8 +1,8 @@
 ﻿namespace PolygonDifference
 {
-	public class Edge
+	public class Section
 	{
-		public Edge(Point2D source, Point2D target)
+		public Section(Point2D source, Point2D target)
 		{
 			Source = source;
 			Target = target;
