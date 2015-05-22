@@ -37,5 +37,15 @@ namespace PolygonDifference
 		{
 			return new Point2D(a.X - b.X, a.Y - b.Y);
 		}
+
+		public static Point2D operator/(Point2D a, double val)
+		{
+			return new Point2D(a.X/val, a.Y/val);
+		}
+
+		public static Point2D operator *(Point2D a, double val)
+		{
+			return new Point2D(a.X * val, a.Y * val);
+		}
 	}
 }

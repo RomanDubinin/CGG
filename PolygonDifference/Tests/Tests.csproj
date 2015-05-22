@@ -50,7 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="IntersectionOfLinesTests.cs" />
+    <Compile Include="IntersectionTests.cs" />
     <Compile Include="Point2DTests.cs" />
     <Compile Include="PolygonContainsTests.cs" />
     <Compile Include="SectorTests.cs" />

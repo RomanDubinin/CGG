@@ -68,16 +68,45 @@ namespace PolygonDifference
 			var b2 = section2.Target.X - section2.Source.X;
 			var c2 = section2.Source.X * section2.Target.Y - section2.Target.X * section2.Source.Y;
 
-			var x = (c1*b2 - c2*b1)/(a1*b2 - a2*b1);
-			var y = (a1*c2 - a2*c1)/(a1*b2 - a2*b1);
+			var x = -(c1*b2 - c2*b1)/(a1*b2 - a2*b1);
+			var y = -(a1*c2 - a2*c1)/(a1*b2 - a2*b1);
 			
 
 			return new Point2D(x, y);
 		}
 
-//		public static Point2D IntersectionOfSections(Section section1, Section section2)
-//		{
-//
-//		}
+		public static Point2D IntersectionOfSections(Section section1, Section section2)
+		{
+			var intersectionOfLines = IntersectionOfLines(section1, section2);
+			if (PointIsOnSection(section1, intersectionOfLines) && PointIsOnSection(section2, intersectionOfLines))
+				return intersectionOfLines;
+			return null;
+		}
+
+		public static bool PointIsOnLine(Section section, Point2D point)
+		{
+			var a = section.Source.Y - section.Target.Y;
+			var b = section.Target.X - section.Source.X;
+			var c = section.Source.X * section.Target.Y - section.Target.X * section.Source.Y;
+
+			return (Math.Abs(a*point.X + b*point.Y + c) < Epsilon);
+		}
+
+		public static bool PointIsOnSection(Section section, Point2D point)
+		{
+			if (!PointIsOnLine(section, point))
+				return false;
+
+			var vectorFromSource = section.Source - point;
+			var vectorFromTarget = section.Target - point;
+
+			var normalizedVectorFromSource = vectorFromSource/vectorFromSource.Lenght();
+			var normalizedVectorFromTarget = vectorFromTarget/vectorFromTarget.Lenght();
+
+			return
+				Math.Abs(normalizedVectorFromSource.Lenght() - 1) < Epsilon &&
+				Math.Abs(normalizedVectorFromTarget.Lenght() - 1) < Epsilon &&
+				!PolygonHelper.PointsAreEquals(normalizedVectorFromSource, normalizedVectorFromTarget, PolygonHelper.Epsilon);
+		}
 	}
 }
