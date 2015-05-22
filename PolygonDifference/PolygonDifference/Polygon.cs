@@ -10,6 +10,7 @@ namespace PolygonDifference
 
 			public Polygon(List<Point2D> points)
 			{
+				//todo: впилить проверку на обход против часовой(отдельным методом, не для каждого объекта)
 				Points = points;
 				Sections = new List<Section>(Points.Count);
 				var nextSection = new Section(Points[points.Count - 1], Points[0], null);

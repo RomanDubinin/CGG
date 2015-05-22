@@ -117,7 +117,7 @@ namespace PolygonDifference
 			var pair = a.Sections.SelectMany(edgeA => b.Sections, (edgeA, edgeB) => new[] {edgeA, edgeB})
 				.FirstOrDefault(edges => IntersectionOfSections(edges[0], edges[1]) != null);
 
-			var inside = pair[0].Target.SinTo(pair[1].Target) > 0 ? pair[1] : pair[0];
+			var inside = (pair[0].Target - pair[0].Source).SinTo(pair[1].Target - pair[1].Source) > 0 ? pair[1] : pair[0];
 			var outside = inside == pair[0] ? pair[1] : pair[0];
 
 			var k = a.Sections.Contains(inside) ? 1 : 0;

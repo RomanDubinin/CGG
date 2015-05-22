@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
+using PolygonDifference;
 
 namespace Vsualization
 {
@@ -13,6 +15,57 @@ namespace Vsualization
 
 			var graphics = Graphics.FromImage(pictureBox1.Image);
 
+
+			var polygonA = new Polygon(
+				new List<Point2D>
+				{
+					new Point2D(200, 400),
+					new Point2D(200, 200),
+					new Point2D(400, 200),
+					new Point2D(400, 400)
+				});
+			var polygonB = new Polygon(
+				new List<Point2D>
+				{
+					new Point2D(300, 300),
+					new Point2D(100, 300),
+					new Point2D(100, 100),
+					new Point2D(300, 100),
+				});
+
+//						var first = polygonA.Sections.First();
+//						var currentSection = first;
+//						while (currentSection.NextSection != first)
+//						{
+//							currentSection = currentSection.NextSection;
+//						}
+
+			foreach (var section in polygonA.Sections)
+			{
+				graphics.DrawLine(Pens.BlueViolet, MyPointToSysDrawingPoint(section.Source), MyPointToSysDrawingPoint(section.Target));
+			}
+
+			var brownPen = new Pen(Color.Brown, 6);
+			foreach (var section in polygonB.Sections)
+			{
+				graphics.DrawLine(brownPen, MyPointToSysDrawingPoint(section.Source), MyPointToSysDrawingPoint(section.Target));
+			}
+
+
+			var diffs = PolygonHelper.GetDifference(polygonA, polygonB);
+			var blueVioletPen = new Pen(Brushes.BlueViolet, 4);
+			foreach (var polygon in diffs)
+			{
+				foreach (var section in polygon.Sections)
+				{
+					graphics.DrawLine(blueVioletPen, MyPointToSysDrawingPoint(section.Source), MyPointToSysDrawingPoint(section.Target));
+				}
+			}
+		}
+
+		public static Point MyPointToSysDrawingPoint(Point2D point)
+		{
+			return new Point((int) point.X, (int) point.Y);
 		}
 	}
 }
