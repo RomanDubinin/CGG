@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using PolygonDifference;
 
@@ -40,12 +41,13 @@ namespace Vsualization
 //							currentSection = currentSection.NextSection;
 //						}
 
+			var blueVioletPen = new Pen(Brushes.BlueViolet, 4);
 			foreach (var section in polygonA.Sections)
 			{
-				graphics.DrawLine(Pens.BlueViolet, MyPointToSysDrawingPoint(section.Source), MyPointToSysDrawingPoint(section.Target));
+				graphics.DrawLine(blueVioletPen, MyPointToSysDrawingPoint(section.Source), MyPointToSysDrawingPoint(section.Target));
 			}
 
-			var brownPen = new Pen(Color.Brown, 8);
+			var brownPen = new Pen(Color.Brown, 4);
 			foreach (var section in polygonB.Sections)
 			{
 				graphics.DrawLine(brownPen, MyPointToSysDrawingPoint(section.Source), MyPointToSysDrawingPoint(section.Target));
@@ -53,13 +55,9 @@ namespace Vsualization
 
 
 			var diffs = PolygonHelper.GetDifference(polygonA, polygonB);
-			var blueVioletPen = new Pen(Brushes.BlueViolet, 4);
 			foreach (var polygon in diffs)
 			{
-				foreach (var section in polygon.Sections)
-				{
-					graphics.DrawLine(blueVioletPen, MyPointToSysDrawingPoint(section.Source), MyPointToSysDrawingPoint(section.Target));
-				}
+				graphics.FillPolygon(Brushes.BlueViolet, polygon.Points.Select(MyPointToSysDrawingPoint).ToArray());
 			}
 		}
 
