@@ -95,6 +95,8 @@ namespace PolygonDifference
 
 		public static bool PointIsOnSection(Section section, Point2D point)
 		{
+			if (point == null)
+				return false;
 			if (!PointIsOnLine(section, point))
 				return false;
 
@@ -113,16 +115,79 @@ namespace PolygonDifference
 		public static List<Polygon> GetDifference(Polygon a, Polygon b)
 		{
 			var pair = a.Sections.SelectMany(edgeA => b.Sections, (edgeA, edgeB) => new[] {edgeA, edgeB})
-				.FirstOrDefault(edges => PolygonHelper.IntersectionOfSections(edges[0], edges[1]) != null);
+				.FirstOrDefault(edges => IntersectionOfSections(edges[0], edges[1]) != null);
 
 			var inside = pair[0].Target.SinTo(pair[1].Target) > 0 ? pair[1] : pair[0];
 			var outside = inside == pair[0] ? pair[1] : pair[0];
 
 			var k = a.Sections.Contains(inside) ? 1 : 0;
 
+			var firstIntersection = IntersectionOfSections(inside, outside);
+			var currentIntersection = firstIntersection;
+
+			var resultPolygons = new List<Polygon>();
+			do
+			{
+				outside = outside.NextSection;
+				var insidePoints = new List<Point2D>();
+				var outsidePoints = new List<Point2D>();
+				outsidePoints.Add(currentIntersection);
+				outsidePoints.Add(outside.Source);
+
+				while(true)
+				{
+					currentIntersection = IntersectionOfLines(inside, outside);
+					var intersectionPointIsOnInsideSection = PointIsOnSection(inside, currentIntersection);
+					var intersectionPointIsOnOutsideSection = PointIsOnSection(outside, currentIntersection);
+
+					if(intersectionPointIsOnInsideSection && intersectionPointIsOnOutsideSection)
+						break;
+
+					if (intersectionPointIsOnInsideSection && !intersectionPointIsOnOutsideSection)
+					{
+						outside = outside.NextSection;
+						if (k % 2 == 0)
+						{
+							outsidePoints.Add(outside.Source);
+						}
+					}
 
 
-			return new List<Polygon>();
+					if (!intersectionPointIsOnInsideSection && intersectionPointIsOnOutsideSection)
+					{
+						inside = inside.NextSection;
+						if (k % 2 == 0)
+						{
+							insidePoints.Add(inside.Source);
+						}
+					}
+
+
+					if (!intersectionPointIsOnInsideSection && !intersectionPointIsOnOutsideSection)
+					{
+						outside = outside.NextSection;
+						if (k % 2 == 0)
+						{
+							outsidePoints.Add(outside.Source);
+						}
+					}
+				}
+
+				outsidePoints.Add(currentIntersection);
+				insidePoints.Reverse();
+				if (k % 2 == 0)
+				{
+					var polygon = new Polygon(outsidePoints.Concat(insidePoints).ToList());
+					resultPolygons.Add(polygon);
+				}
+				k++;
+				var temp = inside;
+				inside = outside;
+				outside = temp;
+
+			} while (!PointsAreEquals(firstIntersection, currentIntersection, Epsilon));
+
+			return resultPolygons;
 		}
 	}
 }
