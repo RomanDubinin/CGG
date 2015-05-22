@@ -6,17 +6,22 @@ namespace PolygonDifference
 		public class Polygon
 		{
 			public readonly List<Point2D> Points;
-			public readonly List<Section> Edges;
+			public readonly List<Section> Sections;
 
 			public Polygon(List<Point2D> points)
 			{
 				Points = points;
-				Edges = new List<Section>(Points.Count);
-				for (var i = 0; i < Points.Count - 1; i++)
+				Sections = new List<Section>(Points.Count);
+				var nextSection = new Section(Points[points.Count - 1], Points[0], null);
+				Sections.Add(nextSection);
+				for (var i = Points.Count - 1; i > 0; i--)
 				{
-					Edges.Add(new Section(Points[i], Points[i + 1]));
+					var currentSection = new Section(Points[i - 1], Points[i], nextSection);
+					Sections.Add(currentSection);
+					nextSection = currentSection;
 				}
-				Edges.Add(new Section(Points[Points.Count - 1], Points.First()));
+				Sections.First().NextSection = nextSection;
+				Sections.Reverse();
 			}
 		}
 }

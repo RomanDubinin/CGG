@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PolygonDifference
@@ -17,7 +18,7 @@ namespace PolygonDifference
 			var movedPolygon = new Polygon(polygon.Points.Select(p => p - point).ToList());
 			var numbersOfPices = movedPolygon.Points.Select(NumberOfSectorInCircle);
 			var sum = 0;
-			foreach (var edge in movedPolygon.Edges)
+			foreach (var edge in movedPolygon.Sections)
 			{
 				var dif = ModularDifference(NumberOfSectorInCircle(edge.Source) - NumberOfSectorInCircle(edge.Target), 4);
 				if (Math.Abs(dif) == 4)
@@ -107,6 +108,21 @@ namespace PolygonDifference
 				Math.Abs(normalizedVectorFromSource.Lenght() - 1) < Epsilon &&
 				Math.Abs(normalizedVectorFromTarget.Lenght() - 1) < Epsilon &&
 				!PolygonHelper.PointsAreEquals(normalizedVectorFromSource, normalizedVectorFromTarget, PolygonHelper.Epsilon);
+		}
+
+		public static List<Polygon> GetDifference(Polygon a, Polygon b)
+		{
+			var pair = a.Sections.SelectMany(edgeA => b.Sections, (edgeA, edgeB) => new[] {edgeA, edgeB})
+				.FirstOrDefault(edges => PolygonHelper.IntersectionOfSections(edges[0], edges[1]) != null);
+
+			var inside = pair[0].Target.SinTo(pair[1].Target) > 0 ? pair[1] : pair[0];
+			var outside = inside == pair[0] ? pair[1] : pair[0];
+
+			var k = a.Sections.Contains(inside) ? 1 : 0;
+
+
+
+			return new List<Polygon>();
 		}
 	}
 }
