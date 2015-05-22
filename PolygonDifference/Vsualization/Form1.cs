@@ -19,16 +19,16 @@ namespace Vsualization
 			var polygonA = new Polygon(
 				new List<Point2D>
 				{
-					new Point2D(200, 400),
-					new Point2D(200, 200),
+					new Point2D(50, 400),
+					new Point2D(50, 200),
 					new Point2D(400, 200),
 					new Point2D(400, 400)
 				});
 			var polygonB = new Polygon(
 				new List<Point2D>
 				{
-					new Point2D(300, 300),
-					new Point2D(100, 300),
+					new Point2D(300, 500),
+					new Point2D(100, 500),
 					new Point2D(100, 100),
 					new Point2D(300, 100),
 				});
@@ -45,7 +45,7 @@ namespace Vsualization
 				graphics.DrawLine(Pens.BlueViolet, MyPointToSysDrawingPoint(section.Source), MyPointToSysDrawingPoint(section.Target));
 			}
 
-			var brownPen = new Pen(Color.Brown, 6);
+			var brownPen = new Pen(Color.Brown, 8);
 			foreach (var section in polygonB.Sections)
 			{
 				graphics.DrawLine(brownPen, MyPointToSysDrawingPoint(section.Source), MyPointToSysDrawingPoint(section.Target));
