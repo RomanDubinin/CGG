@@ -12,11 +12,11 @@ namespace Tests
 		{
 			var point1 = new Point2D(2, 5);
 			var point2 = new Point2D(5, -2);
-			var secction1 = new Section(point1, point2);
+			var secction1 = new Section(point1, point2, null);
 
 			var point3 = new Point2D(4, 1);
 			var point4 = new Point2D(-3, -2);
-			var section2 = new Section(point3, point4);
+			var section2 = new Section(point3, point4, null);
 
 			var expectedPoint = new Point2D(3.7586206896552, 0.89655172413793);
 			var realPoint = PolygonHelper.IntersectionOfLines(secction1, section2);
@@ -29,11 +29,11 @@ namespace Tests
 		{
 			var point1 = new Point2D(2, 5);
 			var point2 = new Point2D(5, -2);
-			var secction1 = new Section(point1, point2);
+			var secction1 = new Section(point1, point2, null);
 
 			var point3 = new Point2D(3, 5);
 			var point4 = new Point2D(6, -2);
-			var section2 = new Section(point3, point4);
+			var section2 = new Section(point3, point4, null);
 
 			var realPoint = PolygonHelper.IntersectionOfLines(secction1, section2);
 
@@ -45,11 +45,11 @@ namespace Tests
 		{
 			var point1 = new Point2D(2, 5);
 			var point2 = new Point2D(5, -2);
-			var secction1 = new Section(point1, point2);
+			var secction1 = new Section(point1, point2, null);
 
 			var point3 = new Point2D(3, 5);
 			var point4 = new Point2D(6, -2);
-			var section2 = new Section(point3, point4);
+			var section2 = new Section(point3, point4, null);
 
 			var realPoint = PolygonHelper.IntersectionOfSections(secction1, section2);
 
@@ -61,11 +61,11 @@ namespace Tests
 		{
 			var point1 = new Point2D(2, 5);
 			var point2 = new Point2D(5, -2);
-			var secction1 = new Section(point1, point2);
+			var secction1 = new Section(point1, point2, null);
 
 			var point3 = new Point2D(4, 1);
 			var point4 = new Point2D(-3, -2);
-			var section2 = new Section(point3, point4);
+			var section2 = new Section(point3, point4, null);
 
 			var expectedPoint = new Point2D(3.7586206896552, 0.89655172413793);
 			var realPoint = PolygonHelper.IntersectionOfSections(secction1, section2);
@@ -78,11 +78,11 @@ namespace Tests
 		{
 			var point1 = new Point2D(2, 5);
 			var point2 = new Point2D(5, -2);
-			var secction1 = new Section(point1, point2);
+			var secction1 = new Section(point1, point2, null);
 
 			var point3 = new Point2D(3, 1);
 			var point4 = new Point2D(-3, -2);
-			var section2 = new Section(point3, point4);
+			var section2 = new Section(point3, point4, null);
 
 			var realPoint = PolygonHelper.IntersectionOfSections(secction1, section2);
 
