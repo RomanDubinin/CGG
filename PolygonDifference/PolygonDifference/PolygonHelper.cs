@@ -114,7 +114,22 @@ namespace PolygonDifference
 
 		public static List<Polygon> GetDifference(Polygon a, Polygon b)
 		{
-			var pair = a.Sections.SelectMany(edgeA => b.Sections, (edgeA, edgeB) => new[] {edgeA, edgeB})
+			var directedA = a;
+			var directedB = b;
+			if (OrientedArea(a) < 0)
+			{
+				var reversed = new List<Point2D>(a.Points);
+				reversed.Reverse();
+				directedA = new Polygon(reversed);
+			}
+			if (OrientedArea(b) < 0)
+			{
+				var reversed = new List<Point2D>(b.Points);
+				reversed.Reverse();
+				directedB = new Polygon(reversed);
+			}
+
+			var pair = directedA.Sections.SelectMany(edgeA => directedB.Sections, (edgeA, edgeB) => new[] { edgeA, edgeB })
 				.FirstOrDefault(edges => IntersectionOfSections(edges[0], edges[1]) != null);
 
 			if (pair == null)
@@ -123,7 +138,7 @@ namespace PolygonDifference
 			var inside = (pair[0].Target - pair[0].Source).SinTo(pair[1].Target - pair[1].Source) > 0 ? pair[1] : pair[0];
 			var outside = inside == pair[0] ? pair[1] : pair[0];
 
-			var k = a.Sections.Contains(inside) ? 1 : 0;
+			var k = directedA.Sections.Contains(inside) ? 1 : 0;
 
 			var firstIntersection = IntersectionOfSections(inside, outside);
 			var currentIntersection = firstIntersection;
@@ -191,6 +206,12 @@ namespace PolygonDifference
 			} while (!PointsAreEquals(firstIntersection, currentIntersection, Epsilon));
 
 			return resultPolygons;
+		}
+
+		public static double OrientedArea(Polygon polygon)
+		{
+			var area = polygon.Sections.Sum(section => section.Source.X*section.Target.Y - section.Source.Y*section.Target.X);
+			return area/2;
 		}
 	}
 }

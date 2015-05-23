@@ -29,17 +29,10 @@ namespace Vsualization
 				new List<Point2D>
 				{
 					new Point2D(300, 500),
-					new Point2D(100, 500),
-					new Point2D(100, 100),
 					new Point2D(300, 100),
+					new Point2D(100, 100),
+					new Point2D(100, 500),
 				});
-
-//						var first = polygonA.Sections.First();
-//						var currentSection = first;
-//						while (currentSection.NextSection != first)
-//						{
-//							currentSection = currentSection.NextSection;
-//						}
 
 			var blueVioletPen = new Pen(Brushes.BlueViolet, 4);
 			foreach (var section in polygonA.Sections)
