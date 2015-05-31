@@ -6,11 +6,11 @@ namespace Task5
 	{
 		static public Figure GetPyramid()
 		{
-			var basePoint1 = new Point3D(10, 100, 20);
-			var basePoint2 = new Point3D(10, 300, 20);
-			var basePoint3 = new Point3D(-100, 320, 10);
-			var basePoint4 = new Point3D(-100, 120, 10);
-			var topPoint = new Point3D(-40, 200, 300);
+			var basePoint1 = new Point3D(10, 30, -10);
+			var basePoint2 = new Point3D(10, 10, -100);
+			var basePoint3 = new Point3D(400, 10, -100);
+			var basePoint4 = new Point3D(300, 30, -10);
+			var topPoint = new Point3D(200, 400, -50);
 
 			var frontSide = new Side(new []{basePoint1, basePoint2, topPoint}, Color.BlueViolet);
 			var rightSide = new Side(new []{basePoint2, basePoint3, topPoint}, Color.Brown);

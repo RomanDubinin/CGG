@@ -6,77 +6,86 @@ using System.Windows.Forms;
 
 namespace Task5
 {
-	class Program
+	public class Program
 	{
 		readonly static Bitmap Image = new Bitmap(Constants.WindowSize, Constants.WindowSize);
-		static readonly Figure[] Figures = {DataProvider.GetPyramid(), DataProvider.GetCube()};
-
-		private static void DrawPixel(int screenX, int screenY, Color color)
-		{
-			Image.SetPixel(screenX, screenY, color);
-		}
+		static readonly Figure[] Figures = {DataProvider.GetPyramid()};
 
 		private static void CreateImage()
 		{
-			
-			for (var screenY = 1; screenY < Constants.WindowSize; screenY++)
-			{
-				ProcessLine(screenY);
-			}
-		}
 
-		private static void ProcessLine(int currentY)
-		{
-			var zBuf = new double[Constants.WindowSize];
-			var colors = new Color[Constants.WindowSize];
-			for (var i = 0; i < Constants.WindowSize; i++)
+			var zBuf = new double[Constants.WindowSize, Constants.WindowSize];
+			var colors = new Color[Constants.WindowSize, Constants.WindowSize];
+			for (var y = 0; y < Constants.WindowSize; y++)
 			{
-				zBuf[i] = int.MaxValue;
-				colors[i] = Color.Azure;
-			}
-
-			foreach (var figure in Figures)
-			{
-				ProcessFigureInLine(currentY, figure, zBuf, colors);
-			}
-		}
-
-		private static void ProcessFigureInLine(int currentZ, Figure figure, double[] zBuf, Color[] colors)
-		{
-			foreach (var side in SidesIntersectsThePlane(figure, currentZ))
-			{
-				var intersectionPoints = IntersectionPoints(side, currentZ);
-
-				if (intersectionPoints.Count <= 2)
+				for (var x = 0; x < Constants.WindowSize; x++)
 				{
-					var firstPoint = intersectionPoints.First();
-					var secondPoint = intersectionPoints.Last();
+					zBuf[x, y] = int.MaxValue;
+					colors[x, y] = Color.Azure;
+				}
+			}
 
-					var firstScreenPoint = GetScreenPoint(firstPoint);
-					var secondScreenPoint = GetScreenPoint(secondPoint);
-
-					var vector = secondPoint - firstPoint;
-					vector /= (Math.Abs(firstScreenPoint.X - secondScreenPoint.X));
-
-					foreach (var i in Range(PutIntoScreen(firstScreenPoint.X), PutIntoScreen(secondScreenPoint.X)))
+			for (var x = 0; x < Constants.WindowSize; x++) 
+			{
+				for (var y = 0; y < Constants.WindowSize; y++)
+				{
+					foreach (var figure in Figures)
 					{
-						var distance = GetDistance(firstPoint);
-						if (zBuf[i] > distance)
+						foreach (var side in figure.Sides)
 						{
-							zBuf[i] = distance;
-							colors[i] = side.Color;
+							var screenPolygon = new Polygon2D(side.Points.Select(point => new Point2D(point.X, point.Y)).ToList());
+							var screenPoint = new Point2D(x, y);
+							if (PointInPolygon(screenPolygon, screenPoint))
+							{
+								var distance = GetDistance(side, screenPoint);
+								if (distance < zBuf[x, y])
+								{
+									zBuf[x, y] = distance;
+									colors[x, y] = side.Color;
+								}
+							}
+							
 						}
-						firstPoint += vector;
 					}
 				}
-				else
-				{
-					throw new Exception("Side is not convex");
-				}
 			}
 
-			for (int i = 0; i < Constants.WindowSize; i++)
-				DrawPixel(i, Constants.WindowSize - currentZ, colors[i]);
+			for (int x = 0; x < Constants.WindowSize; x++)
+			{
+				for (int y = 0; y < Constants.WindowSize; y++)
+				{
+					Image.SetPixel(x, Constants.WindowSize - y - 1, colors[x,y]);
+				}
+			}
+		}
+
+		private static double GetDistance(Side side, Point2D screenPoint)
+		{
+			var firstPoint = side.Points.First();
+			var secondPoint = side.Points.Skip(1).First();
+			var thirdPoint = side.Points.Skip(2).First();
+
+			return -ComputeZOfPointInPlane(firstPoint, secondPoint, thirdPoint, screenPoint);
+		}
+
+		private static double ComputeZOfPointInPlane(Point3D firstPoint, Point3D secondPoint, Point3D thirdPoint, Point2D screenPoint)
+		{
+			var matrix11 = screenPoint.X - firstPoint.X;
+			var matrix12 = screenPoint.Y - firstPoint.Y;
+
+			var matrix21 = secondPoint.X - firstPoint.X;
+			var matrix22 = secondPoint.Y - firstPoint.Y;
+			var matrix23 = secondPoint.Z - firstPoint.Z;
+			var matrix31 = thirdPoint.X - firstPoint.X;
+			var matrix32 = thirdPoint.Y - firstPoint.Y;
+			var matrix33 = thirdPoint.Z - firstPoint.Z;
+
+			var matrix13 = (-matrix11*matrix22*matrix33 +
+			                matrix11*matrix23*matrix32 +
+			                matrix12*matrix21*matrix33 -
+			                matrix12*matrix23*matrix31)/
+							(matrix21*matrix32 - matrix22*matrix31);
+			return matrix13 + firstPoint.Z;
 		}
 
 		private static IEnumerable<int> Range(int from, int to)
@@ -108,54 +117,57 @@ namespace Task5
 			return Constants.DistToZero - point3D.X;
 		}
 
-		private static ScreenPoint GetScreenPoint(Point3D point3D)
+		private static Point2D GetScreenPoint(Point3D point3D)
 		{
-			return new ScreenPoint((int) point3D.Y, (int) (Constants.WindowSize - point3D.Z));
+			return new Point2D((int)point3D.X, (int)(Constants.WindowSize - point3D.Y));
 		}
 
-		private static IEnumerable<Side> SidesIntersectsThePlane(Figure figure, double z)
+		public static bool PointInPolygon(Polygon2D polygon2D, Point2D point)
 		{
-			return figure.Sides
-				.Where(side => 
-					side.Points.Any(point => point.Z >= z) && 
-					side.Points.Any(point => point.Z <= z));
-
-		}
-
-		private static IList<Point3D> IntersectionPoints(Side side, double z)
-		{
-			var intersectionPoints = new List<Point3D>();
-
-			var lastPoint = side.Points.Last();
-			foreach (var point in side.Points)
+			var movedPolygon = new Polygon2D(polygon2D.Points.Select(p => p - point).ToList());
+			var numbersOfPices = movedPolygon.Points.Select(NumberOfSectorInCircle);
+			var sum = 0;
+			foreach (var edge in movedPolygon.Sections)
 			{
-				if (lastPoint.Z >= z && point.Z <= z ||
-					lastPoint.Z <= z && point.Z >= z)
-				{
-					if (Math.Abs(lastPoint.Z - point.Z) < Constants.Epsilon)
-					{
-						intersectionPoints.Add(lastPoint);
-						intersectionPoints.Add(point);
-					}
-					else
-					{
-						var vector = point - lastPoint;
-						vector *= (z - lastPoint.Z)/(point.Z - lastPoint.Z);
-						intersectionPoints.Add(lastPoint + vector);
-					}
-				}
-				lastPoint = point;
+				var dif = ModularDifference(NumberOfSectorInCircle(edge.Source) - NumberOfSectorInCircle(edge.Target), 4);
+				if (Math.Abs(dif) == 4)
+					sum += edge.Source.SinTo(edge.Target) > 0 ? -4 : 4;
+				else
+					sum += dif;
 			}
 
-			if (intersectionPoints.All(point => Math.Abs(point.Z - z) < Constants.Epsilon))
-			{
-				var orderedPoints = intersectionPoints.OrderBy(p => (int)p.Y);
-				return new[] {orderedPoints.First(), orderedPoints.Last()};
-			}
-
-			return intersectionPoints.Distinct().ToList();
-			
+			return Math.Abs(sum) == 8;
 		}
+
+		public static int ModularDifference(int val, int mod)
+		{
+			if (val > mod)
+				val -= mod * 2;
+			else if (val < -mod)
+				val += mod * 2;
+			return val;
+		}
+
+		public static int NumberOfSectorInCircle(Point2D point)
+		{
+			if (point.X > 0 && point.Y >= 0 && point.X > point.Y)
+				return 0;
+			if (point.X > 0 && point.Y > 0 && point.X <= point.Y)
+				return 1;
+			if (point.X <= 0 && point.Y > 0 && -point.X < point.Y)
+				return 2;
+			if (point.X < 0 && point.Y > 0 && -point.X >= point.Y)
+				return 3;
+			if (point.X < 0 && point.Y <= 0 && -point.X > -point.Y)
+				return 4;
+			if (point.X < 0 && point.Y < 0 && -point.X <= -point.Y)
+				return 5;
+			if (point.X >= 0 && point.Y < 0 && point.X < -point.Y)
+				return 6;
+
+			return 7;
+		}
+
 
 		private static void ShowImageInWindow(Bitmap image)
 		{
