@@ -25,18 +25,18 @@ namespace Task5
 
 		static public Figure GetCube()
 		{
-			var bottomPoint1 = new Point3D(13, 20, -10);
-			var bottomPoint2 = new Point3D(20, 30, -40);
-			var bottomPoint3 = new Point3D(400, 30, -40);
-			var bottomPoint4 = new Point3D(400, 20,-10);
-			var topPoint1 = new Point3D(13, 220, -10);
-			var topPoint2 = new Point3D(20, 230, -40);
-			var topPoint3 = new Point3D(400, 230, -40);
-			var topPoint4 = new Point3D(400, 220, -10);
+			var bottomPoint1 = new Point3D(10, 10, -10);
+			var bottomPoint2 = new Point3D(30, 70, -40);
+			var bottomPoint3 = new Point3D(430, 70, -40);
+			var bottomPoint4 = new Point3D(410, 10,-10);
+			var topPoint1 = new Point3D(10, 210, -10);
+			var topPoint2 = new Point3D(30, 270, -40);
+			var topPoint3 = new Point3D(430, 270, -40);
+			var topPoint4 = new Point3D(410, 210, -10);
 
 			var frontSide = new Side(new[] {bottomPoint1, bottomPoint2, topPoint2, topPoint1}, Color.DarkRed);
 			var rightSide = new Side(new[] {bottomPoint2, bottomPoint3, topPoint3, topPoint2}, Color.DarkBlue);
-			var backSide = new Side(new[] {bottomPoint3, bottomPoint4, topPoint4, topPoint3}, Color.Cyan);
+			var backSide = new Side(new[] {bottomPoint3, bottomPoint4, topPoint4, topPoint3}, Color.BlueViolet);
 			var leftSide = new Side(new[] {bottomPoint1, bottomPoint4, topPoint4, topPoint1}, Color.DarkOliveGreen);
 			var bottomSide = new Side(new[] {bottomPoint1, bottomPoint2, bottomPoint3, bottomPoint4}, Color.DarkSlateBlue); 
 			var topSide = new Side(new[] {topPoint1, topPoint2, topPoint3, topPoint4}, Color.Aquamarine);
