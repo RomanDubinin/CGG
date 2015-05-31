@@ -9,7 +9,8 @@ namespace Task5
 	public class Program
 	{
 		readonly static Bitmap Image = new Bitmap(Constants.WindowSize, Constants.WindowSize);
-		static readonly Figure[] Figures = {DataProvider.GetPyramid(), DataProvider.GetCube()};
+		static readonly Figure[] Figures = {DataProvider.GetCube()};
+		static readonly Sphere[] Spheres = { DataProvider.GetSphere()};
 
 		private static void CreateImage()
 		{
@@ -29,22 +30,41 @@ namespace Task5
 			{
 				for (var y = 0; y < Constants.WindowSize; y++)
 				{
+					var screenPoint = new Point2D(x, y);
 					foreach (var figure in Figures)
 					{
 						foreach (var side in figure.Sides)
 						{
 							var screenPolygon = new Polygon2D(side.Points.Select(point => new Point2D(point.X, point.Y)).ToList());
-							var screenPoint = new Point2D(x, y);
 							if (PointInPolygon(screenPolygon, screenPoint))
 							{
 								var distance = GetDistance(side, screenPoint);
-								if (distance < zBuf[x, y])
+								
+								if (distance < zBuf[x, y] && distance > 0)
 								{
 									zBuf[x, y] = distance;
 									colors[x, y] = side.Color;
 								}
 							}
 							
+						}
+					}
+					foreach (var sphere in Spheres)
+					{
+						var sphereCenterProjection = new Point2D(sphere.Center.X, sphere.Center.Y);
+						var distToCenterInProjection = (screenPoint - sphereCenterProjection).Lenght();
+						if (distToCenterInProjection < sphere.Radius)
+						{
+							var sin = distToCenterInProjection/sphere.Radius;
+							var cos = Math.Sqrt(1 - Math.Pow(sin, 2));
+
+							var distanceToSphere = -sphere.Center.Z - cos*sphere.Radius;
+							
+							if (distanceToSphere < zBuf[x, y] )
+							{
+								zBuf[x, y] = distanceToSphere;
+								colors[x, y] = sphere.Color;
+							}
 						}
 					}
 				}

@@ -39,10 +39,16 @@ namespace Task5
 			var backSide = new Side(new[] {bottomPoint3, bottomPoint4, topPoint4, topPoint3}, Color.Cyan);
 			var leftSide = new Side(new[] {bottomPoint1, bottomPoint4, topPoint4, topPoint1}, Color.DarkOliveGreen);
 			var bottomSide = new Side(new[] {bottomPoint1, bottomPoint2, bottomPoint3, bottomPoint4}, Color.DarkSlateBlue); 
-			var topSide = new Side(new[] {topPoint1, topPoint2, topPoint3, topPoint4}, Color.Fuchsia);
+			var topSide = new Side(new[] {topPoint1, topPoint2, topPoint3, topPoint4}, Color.Aquamarine);
 
 			var cube = new Figure(new[] {frontSide, rightSide, backSide, leftSide, bottomSide, topSide});
 			return cube;
+		}
+
+
+		static public Sphere GetSphere()
+		{
+			return new Sphere(new Point3D(400, 220, -50), 40, Color.DeepPink);
 		}
 	}
 }

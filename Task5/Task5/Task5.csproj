@@ -53,6 +53,7 @@
     <Compile Include="Point2D.cs" />
     <Compile Include="Section.cs" />
     <Compile Include="Side.cs" />
+    <Compile Include="Sphere.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
