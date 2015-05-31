@@ -6,16 +6,16 @@ namespace Task5
 	{
 		static public Figure GetPyramid()
 		{
-			var basePoint1 = new Point3D(10, 30, -10);
-			var basePoint2 = new Point3D(10, 10, -100);
-			var basePoint3 = new Point3D(400, 10, -100);
-			var basePoint4 = new Point3D(300, 30, -10);
+			var basePoint1 = new Point3D(10, 10, -10);
+			var basePoint2 = new Point3D(10, 30, -100);
+			var basePoint3 = new Point3D(300, 30, -100);
+			var basePoint4 = new Point3D(400, 10, -10);
 			var topPoint = new Point3D(200, 400, -50);
 
-			var frontSide = new Side(new []{basePoint1, basePoint2, topPoint}, Color.BlueViolet);
-			var rightSide = new Side(new []{basePoint2, basePoint3, topPoint}, Color.Brown);
-			var backSide = new Side(new []{basePoint3, basePoint4, topPoint}, Color.Chartreuse);
-			var leftSide = new Side(new []{basePoint4, basePoint1, topPoint}, Color.DarkBlue);
+			var frontSide = new Side(new []{basePoint1, basePoint4, topPoint}, Color.BlueViolet);
+			var rightSide = new Side(new []{basePoint4, basePoint3, topPoint}, Color.Brown);
+			var backSide = new Side(new []{basePoint3, basePoint2, topPoint}, Color.Chartreuse);
+			var leftSide = new Side(new []{basePoint2, basePoint1, topPoint}, Color.DarkBlue);
 			var bottomSide = new Side(new []{basePoint1, basePoint2, basePoint3, basePoint4}, Color.Chocolate);
 
 			var pyramid = new Figure(new[] {frontSide, rightSide, backSide, leftSide, bottomSide});
@@ -25,14 +25,14 @@ namespace Task5
 
 		static public Figure GetCube()
 		{
-			var bottomPoint1 = new Point3D(10, 100, 30);
-			var bottomPoint2 = new Point3D(10, 300, 30);
-			var bottomPoint3 = new Point3D(-100, 320, 50);
-			var bottomPoint4 = new Point3D(-100, 120, 50);
-			var topPoint1 = new Point3D(10, 100, 130);
-			var topPoint2 = new Point3D(10, 300, 130);
-			var topPoint3 = new Point3D(-100, 320, 150);
-			var topPoint4 = new Point3D(-100, 120, 150);
+			var bottomPoint1 = new Point3D(13, 20, -10);
+			var bottomPoint2 = new Point3D(20, 30, -40);
+			var bottomPoint3 = new Point3D(400, 30, -40);
+			var bottomPoint4 = new Point3D(400, 20,-10);
+			var topPoint1 = new Point3D(13, 220, -10);
+			var topPoint2 = new Point3D(20, 230, -40);
+			var topPoint3 = new Point3D(400, 230, -40);
+			var topPoint4 = new Point3D(400, 220, -10);
 
 			var frontSide = new Side(new[] {bottomPoint1, bottomPoint2, topPoint2, topPoint1}, Color.DarkRed);
 			var rightSide = new Side(new[] {bottomPoint2, bottomPoint3, topPoint3, topPoint2}, Color.DarkBlue);

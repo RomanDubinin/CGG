@@ -9,7 +9,7 @@ namespace Task5
 	public class Program
 	{
 		readonly static Bitmap Image = new Bitmap(Constants.WindowSize, Constants.WindowSize);
-		static readonly Figure[] Figures = {DataProvider.GetPyramid()};
+		static readonly Figure[] Figures = {DataProvider.GetPyramid(), DataProvider.GetCube()};
 
 		private static void CreateImage()
 		{
