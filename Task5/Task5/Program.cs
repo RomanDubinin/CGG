@@ -60,7 +60,7 @@ namespace Task5
 
 							var distanceToSphere = -sphere.Center.Z - cos*sphere.Radius;
 							
-							if (distanceToSphere < zBuf[x, y] )
+							if (distanceToSphere < zBuf[x, y] && distanceToSphere > 0)
 							{
 								zBuf[x, y] = distanceToSphere;
 								colors[x, y] = sphere.Color;
